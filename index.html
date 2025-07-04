@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Gestión Usuarios</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #444;
+      padding: 10px;
+      color: white;
+      display: flex;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #selector {
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="users.html">Gestión Usuarios</a>
+    <a href="#">Publicaciones</a>
+  </nav>
+
+  <div class="container">
+    <h1>Sistema de Gestión Usuarios</h1>
+
+    <div id="selector">
+      <label for="data-type">Seleccione Datos: </label>
+        <select id="data-type">
+            <option value="users">Usuarios</option>
+            <option value="posts">Publicaciones</option>
+            <option value="comments">Comentarios</option>
+            <option value="albums">Álbumes</option>
+        </select>
+
+      <button id="load-data">Cargar Datos</button>
+    </div>
+
+    <!--Placeholder de Tabla, se llenara de manera dinámica-->
+    <table id="data-table" class="display">
+      <thead>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+  <!--Script para manejar jsonplaceholder-->
+  <script>
+    const API_BASE = 'https://jsonplaceholder.typicode.com';
+
+    function loadUsers(data) {
+      return data.map(user => [
+        user.id,
+        user.name,
+        user.username,
+        user.email,
+        user.website
+      ]);
+    }
+
+    function loadPosts(data) {
+      return data.map(post => [
+        post.id,
+        post.title,
+        post.body
+      ]);
+    }
+
+    function loadComments(data) {
+      return data.map(comment => [
+        comment.id,
+        comment.name,
+        comment.email,
+        comment.body
+      ]);
+    }
+
+    function loadAlbums(data) {
+      return data.map(album => [
+        album.id,
+        album.userId,
+        album.title
+        ]);
+    }
+
+
+    const headers = {
+        users: ['ID', 'Nombre', 'Usuario', 'Email', 'Sitio Web'],
+        posts: ['ID', 'Título', 'Contenido'],
+        comments: ['ID', 'Nombre', 'Email', 'Comentario'],
+        albums: ['ID', 'ID de Usuario', 'Título del Álbum']
+    };
+
+
+    const formatters = {
+        users: loadUsers,
+        posts: loadPosts,
+        comments: loadComments,
+        albums: loadAlbums
+    };
+
+
+    let table;
+
+    $(document).ready(function () {
+      $('#load-data').click(function () {
+        const type = $('#data-type').val();
+        const url = `${API_BASE}/${type}`;
+
+        $.getJSON(url, function (data) {
+          const rows = formatters[type](data);
+          const columns = headers[type];
+
+          if ($.fn.DataTable.isDataTable('#data-table')) {
+            table.clear().destroy();
+          }
+
+          $('#data-table thead').empty().append(
+            '<tr>' + columns.map(col => `<th>${col}</th>`).join('') + '</tr>'
+          );
+
+          table = $('#data-table').DataTable({
+            data: rows,
+            columns: columns.map(col => ({ title: col }))
+          });
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

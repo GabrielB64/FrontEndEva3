@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión Usuarios</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      background-color: #444;
+      padding: 10px;
+      color: white;
+      display: flex;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .form-group {
+      flex: 1 1 30%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 5px;
+    }
+
+    input, select {
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    .form-group.full-width {
+      flex: 1 1 100%;
+    }
+
+    .error {
+      border: 2px solid red;
+      background-color: #ffe5e5;
+    }
+
+    .error-msg {
+      color: red;
+      font-size: 12px;
+      display: none;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    button {
+      padding: 8px 16px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html">Inicio</a>
+    <a href="usuarios.html">Gestión Usuarios</a>
+    <a href="#">Publicaciones</a>
+  </nav>
+
+  <div class="container">
+    <h1>Gestión Usuarios</h1>
+
+    <form id="user-form" novalidate>
+      <div class="form-group">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre">
+        <span class="error-msg" id="error-nombre">Este campo es requerido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="usuario">Usuario *</label>
+        <input type="text" id="usuario" name="usuario">
+        <span class="error-msg" id="error-usuario">Este campo es requerido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="fecha">Fecha Ingreso *</label>
+        <input type="text" id="fecha" name="fecha" placeholder="dd/MM/yyyy">
+        <span class="error-msg" id="error-fecha">Debe tener el formato dd/MM/yyyy.</span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email">
+        <span class="error-msg" id="error-email">Debe ser un email válido.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="genero">Género</label>
+        <select id="genero" name="genero">
+          <option value="">Seleccionar</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="sitio">Sitio Web</label>
+        <input type="url" id="sitio" name="sitio">
+      </div>
+
+      <div class="form-group full-width buttons">
+        <button type="button" id="guardar">Guardar</button>
+        <button type="button" id="cancelar">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!--Script de validacion-->
+
+  <script>
+    function limpiarErrores() {
+      $(".error").removeClass("error");
+      $(".error-msg").hide();
+    }
+
+    function validarFecha(fecha) {
+      const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+      return regex.test(fecha);
+    }
+
+    function validarEmail(email) {
+      const regex = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+      return regex.test(email);
+    }
+
+    function validarFormulario() {
+      limpiarErrores();
+      let valido = true;
+
+      const nombre = $("#nombre").val().trim();
+      const usuario = $("#usuario").val().trim();
+      const fecha = $("#fecha").val().trim();
+      const email = $("#email").val().trim();
+
+      if (!nombre) {
+        $("#nombre").addClass("error");
+        $("#error-nombre").show();
+        valido = false;
+      }
+
+      if (!usuario) {
+        $("#usuario").addClass("error");
+        $("#error-usuario").show();
+        valido = false;
+      }
+
+      if (!validarFecha(fecha)) {
+        $("#fecha").addClass("error");
+        $("#error-fecha").show();
+        valido = false;
+      }
+
+      if (!validarEmail(email)) {
+        $("#email").addClass("error");
+        $("#error-email").show();
+        valido = false;
+      }
+
+      return valido;
+    }
+
+    $(document).ready(function () {
+      $("#guardar").click(function () {
+        if (validarFormulario()) {
+          alert("Usuario guardado correctamente (simulado).");
+          $("#user-form")[0].reset();
+          limpiarErrores();
+        }
+      });
+
+      $("#cancelar").click(function () {
+        $("#user-form")[0].reset();
+        limpiarErrores();
+      });
+    });
+  </script>
+
+</body>
+</html>
