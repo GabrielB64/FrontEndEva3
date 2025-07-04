@@ -199,6 +199,40 @@
     }
 
     $(document).ready(function () {
+      $("#nombre").on("input", function() {
+        const valor = $(this).val().trim();
+      if (valor) {
+        $(this).removeClass("error");
+        $("#error-nombre").hide();
+      }
+      });
+
+      $("#usuario").on("input", function() {
+        const valor = $(this).val().trim();
+        if (valor) {
+          $(this).removeClass("error");
+          $("#error-usuario").hide();
+        }
+      });
+
+      $("#fecha").on("input", function() {
+        const valor = $(this).val().trim();
+        const regexFecha = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+        if (regexFecha.test(valor)) {
+          $(this).removeClass("error");
+          $("#error-fecha").hide();
+        }
+      });
+
+      $("#email").on("input", function() {
+        const valor = $(this).val().trim();
+        const regexEmail = /^[^@]+@[^@]+\.[a-zA-Z]{2,}$/;
+        if (regexEmail.test(valor)) {
+          $(this).removeClass("error");
+          $("#error-email").hide();
+        }
+      });
+
       $("#guardar").click(function () {
         if (validarFormulario()) {
           alert("Usuario guardado correctamente (simulado).");
